@@ -16,7 +16,7 @@
   height: 800px;
   width: 800px;
   display:flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
 }
 
 /*# sourceMappingURL=/src.e31bb0bc.css.map */

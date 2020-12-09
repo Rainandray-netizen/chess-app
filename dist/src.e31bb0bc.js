@@ -28285,12 +28285,14 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../gameStuff/defaultPosition.js":[function(require,module,exports) {
-module.exports = [['bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR'], ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'], ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']];
-},{}],"../gameStuff/notationConversion.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../gameStuff/notationConversion.js":[function(require,module,exports) {
 var basicPGN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 module.exports = {
   convertFEN: function convertFEN(fenString) {
+    if (!fenString) {
+      fenString = basicPGN;
+    }
+
     fenArray = fenString.split(' ');
     fenObj = {
       boardPosition: fenArray[0],
@@ -28301,9 +28303,31 @@ module.exports = {
       FullmoveNum: fenArray[5]
     };
 
-    convertPosition = function convertPosition(algNotation) {};
+    convertPosition = function convertPosition(algNotation) {
+      splitArray = algNotation.split('/');
+      console.log({
+        splitArray: splitArray
+      });
+      finalArray = [];
+      splitArray.map(function (rank) {
+        var rankArray = [];
+        rank.split('').map(function (char) {
+          if (char.match(/[a-zA-Z]/)) {
+            rankArray.push(char);
+          } else if (char.match(/[1-8]/)) {
+            //insert that num of empty spaces, or 0's
+            for (; 0 < char; char--) {
+              rankArray.push(0);
+            }
+          }
+        });
+        finalArray.unshift(rankArray);
+      });
+      return finalArray;
+    };
 
-    fenObj.boardPosition = [];
+    fenObj.boardPosition = convertPosition(fenObj.boardPosition);
+    return fenObj;
   }
 };
 },{}],"../node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
@@ -28403,7 +28427,7 @@ var _squareColor = _interopRequireDefault(require("../../../gameStuff/squareColo
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Square = function Square(_ref) {
-  var squre = _ref.squre,
+  var piece = _ref.piece,
       rank = _ref.rank,
       file = _ref.file;
   return /*#__PURE__*/_react.default.createElement("div", {
@@ -28411,7 +28435,7 @@ var Square = function Square(_ref) {
       backgroundColor: (0, _squareColor.default)(rank, file)
     },
     className: "square"
-  });
+  }, piece ? piece : null);
 };
 
 var _default = Square;
@@ -28430,8 +28454,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
-
-var _defaultPosition = _interopRequireDefault(require("../../../gameStuff/defaultPosition"));
 
 var _notationConversion = require("../../../gameStuff/notationConversion");
 
@@ -28461,7 +28483,7 @@ var Board = function Board(_ref) {
   var position = _ref.position;
   console.log((0, _notationConversion.convertFEN)('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'));
 
-  var _useState = (0, _react.useState)(position ? position : _defaultPosition.default),
+  var _useState = (0, _react.useState)(position ? position : (0, _notationConversion.convertFEN)()),
       _useState2 = _slicedToArray(_useState, 2),
       boardState = _useState2[0],
       setBoardState = _useState2[1];
@@ -28471,7 +28493,7 @@ var Board = function Board(_ref) {
   });
   return /*#__PURE__*/_react.default.createElement("article", {
     className: "boardClass"
-  }, boardState && boardState.map(function (row, rank) {
+  }, boardState && boardState.boardPosition.map(function (row, rank) {
     return /*#__PURE__*/_react.default.createElement("section", {
       className: "rowClass"
     }, row.map(function (square, file) {
@@ -28486,7 +28508,7 @@ var Board = function Board(_ref) {
 
 var _default = Board;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","../../../gameStuff/defaultPosition":"../gameStuff/defaultPosition.js","../../../gameStuff/notationConversion":"../gameStuff/notationConversion.js","../Square/Square":"components/Square/Square.js","./board.css":"components/Board/board.css"}],"components/App/App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../../../gameStuff/notationConversion":"../gameStuff/notationConversion.js","../Square/Square":"components/Square/Square.js","./board.css":"components/Board/board.css"}],"components/App/App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28546,7 +28568,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60233" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65246" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
