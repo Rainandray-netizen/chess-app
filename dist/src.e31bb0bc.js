@@ -28285,7 +28285,108 @@ if ("development" === 'production') {
 } else {
   module.exports = require('./cjs/react-dom.development.js');
 }
-},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"components/App/App.js":[function(require,module,exports) {
+},{"./cjs/react-dom.development.js":"../node_modules/react-dom/cjs/react-dom.development.js"}],"../gameStuff/defaultPosition.js":[function(require,module,exports) {
+module.exports = [['bR', 'bN', 'bB', 'bQ', 'bK', 'bB', 'bN', 'bR'], ['bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp', 'bp'], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0], ['wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp', 'wp'], ['wR', 'wN', 'wB', 'wQ', 'wK', 'wB', 'wN', 'wR']];
+},{}],"../gameStuff/notationConversion.js":[function(require,module,exports) {
+var basicPGN = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+module.exports = {
+  convertFEN: function convertFEN(fenString) {
+    fenArray = fenString.split(' ');
+    fenObj = {
+      boardPosition: fenArray[0],
+      activeColor: fenArray[1],
+      castlingAbility: fenArray[2],
+      EnPassantTarget: fenArray[3],
+      HalfmoveClock: fenArray[4],
+      FullmoveNum: fenArray[5]
+    };
+
+    convertPosition = function convertPosition(algNotation) {};
+
+    fenObj.boardPosition = [];
+  }
+};
+},{}],"../node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
+var bundleURL = null;
+
+function getBundleURLCached() {
+  if (!bundleURL) {
+    bundleURL = getBundleURL();
+  }
+
+  return bundleURL;
+}
+
+function getBundleURL() {
+  // Attempt to find the URL of the current script and use that as the base URL
+  try {
+    throw new Error();
+  } catch (err) {
+    var matches = ('' + err.stack).match(/(https?|file|ftp|chrome-extension|moz-extension):\/\/[^)\n]+/g);
+
+    if (matches) {
+      return getBaseURL(matches[0]);
+    }
+  }
+
+  return '/';
+}
+
+function getBaseURL(url) {
+  return ('' + url).replace(/^((?:https?|file|ftp|chrome-extension|moz-extension):\/\/.+)\/[^/]+$/, '$1') + '/';
+}
+
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+},{}],"../node_modules/parcel/src/builtins/css-loader.js":[function(require,module,exports) {
+var bundle = require('./bundle-url');
+
+function updateLink(link) {
+  var newLink = link.cloneNode();
+
+  newLink.onload = function () {
+    link.remove();
+  };
+
+  newLink.href = link.href.split('?')[0] + '?' + Date.now();
+  link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+
+var cssTimeout = null;
+
+function reloadCSS() {
+  if (cssTimeout) {
+    return;
+  }
+
+  cssTimeout = setTimeout(function () {
+    var links = document.querySelectorAll('link[rel="stylesheet"]');
+
+    for (var i = 0; i < links.length; i++) {
+      if (bundle.getBaseURL(links[i].href) === bundle.getBundleURL()) {
+        updateLink(links[i]);
+      }
+    }
+
+    cssTimeout = null;
+  }, 50);
+}
+
+module.exports = reloadCSS;
+},{"./bundle-url":"../node_modules/parcel/src/builtins/bundle-url.js"}],"components/Square/square.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel/src/builtins/css-loader.js"}],"../gameStuff/squareColor.js":[function(require,module,exports) {
+module.exports = function (rank, file) {
+  if (rank % 2 == 0 && file % 2 == 0 || rank % 2 != 0 && file % 2 != 0) {
+    return '#999999';
+  } else {
+    return '#FFFFFF';
+  }
+};
+},{}],"components/Square/Square.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -28295,15 +28396,117 @@ exports.default = void 0;
 
 var _react = _interopRequireDefault(require("react"));
 
+var _square = _interopRequireDefault(require("./square.css"));
+
+var _squareColor = _interopRequireDefault(require("../../../gameStuff/squareColor"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Square = function Square(_ref) {
+  var squre = _ref.squre,
+      rank = _ref.rank,
+      file = _ref.file;
+  return /*#__PURE__*/_react.default.createElement("div", {
+    style: {
+      backgroundColor: (0, _squareColor.default)(rank, file)
+    },
+    className: "square"
+  });
+};
+
+var _default = Square;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","./square.css":"components/Square/square.css","../../../gameStuff/squareColor":"../gameStuff/squareColor.js"}],"components/Board/board.css":[function(require,module,exports) {
+var reloadCSS = require('_css_loader');
+
+module.hot.dispose(reloadCSS);
+module.hot.accept(reloadCSS);
+},{"_css_loader":"../node_modules/parcel/src/builtins/css-loader.js"}],"components/Board/Board.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _defaultPosition = _interopRequireDefault(require("../../../gameStuff/defaultPosition"));
+
+var _notationConversion = require("../../../gameStuff/notationConversion");
+
+var _Square = _interopRequireDefault(require("../Square/Square"));
+
+require("./board.css");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var Board = function Board(_ref) {
+  var position = _ref.position;
+  console.log((0, _notationConversion.convertFEN)('rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'));
+
+  var _useState = (0, _react.useState)(position ? position : _defaultPosition.default),
+      _useState2 = _slicedToArray(_useState, 2),
+      boardState = _useState2[0],
+      setBoardState = _useState2[1];
+
+  console.log({
+    boardState: boardState
+  });
+  return /*#__PURE__*/_react.default.createElement("article", {
+    className: "boardClass"
+  }, boardState && boardState.map(function (row, rank) {
+    return /*#__PURE__*/_react.default.createElement("section", {
+      className: "rowClass"
+    }, row.map(function (square, file) {
+      return /*#__PURE__*/_react.default.createElement(_Square.default, {
+        piece: square,
+        rank: rank + 1,
+        file: file + 1
+      });
+    }));
+  }));
+};
+
+var _default = Board;
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","../../../gameStuff/defaultPosition":"../gameStuff/defaultPosition.js","../../../gameStuff/notationConversion":"../gameStuff/notationConversion.js","../Square/Square":"components/Square/Square.js","./board.css":"components/Board/board.css"}],"components/App/App.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = _interopRequireDefault(require("react"));
+
+var _Board = _interopRequireDefault(require("../Board/Board"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var App = function App() {
-  return /*#__PURE__*/_react.default.createElement("div", null, "Hello Template!");
+  return /*#__PURE__*/_react.default.createElement(_Board.default, null);
 };
 
 var _default = App;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"index.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","../Board/Board":"components/Board/Board.js"}],"index.js":[function(require,module,exports) {
 "use strict";
 
 var _react = _interopRequireDefault(require("react"));
@@ -28343,7 +28546,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59457" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60233" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

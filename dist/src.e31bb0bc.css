@@ -1,0 +1,22 @@
+.square {
+  width: 100px;
+  height: 100px;
+  background-color: #999999;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.rowClass{
+  display: flex;
+  justify-content: left;
+}
+
+.boardClass{
+  border: 3px solid black;
+  height: 800px;
+  width: 800px;
+  display:flex;
+  flex-direction: column;
+}
+
+/*# sourceMappingURL=/src.e31bb0bc.css.map */
